@@ -21,11 +21,11 @@ namespace RGame.RoguelikeKit
             {
                 float speed = StatRuntime.GetValue("Speed") * _globalConfig.MoveSpeedBalanceFactor;
 
-                MyRigidbody2D.linearVelocity = direction * speed;
+                MyRigidbody2D.velocity = direction * speed;
             }
             else
             {
-                MyRigidbody2D.linearVelocity = Vector2.zero;
+                MyRigidbody2D.velocity = Vector2.zero;
             }
             if (direction.x != 0)
                 transform.localScale = new Vector3(Mathf.Sign(direction.x) * Mathf.Abs(transform.localScale.x), transform.localScale.y, 1);

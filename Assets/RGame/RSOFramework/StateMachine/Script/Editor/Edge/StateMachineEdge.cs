@@ -8,7 +8,6 @@ namespace RGame.ScriptableCoreKit
 {
     /// <summary>
     /// Enhanced edge with custom symmetric semicircle arc curves for state machine connections
-    /// Unity 6 compatible with proper event handling
     /// Features symmetric arcing based on connection direction
     /// </summary>
     public class StateMachineEdge : Edge
@@ -46,7 +45,6 @@ namespace RGame.ScriptableCoreKit
 
         public StateMachineEdge()
         {
-            // Critical for Unity 6: Set PickingMode on both edge and edgeControl
             this.pickingMode = PickingMode.Position;
             this.edgeControl.pickingMode = PickingMode.Position;
 
@@ -56,44 +54,19 @@ namespace RGame.ScriptableCoreKit
             // Setup custom rendering
             SetupCustomRendering();
 
-            // Register for panel attachment to setup event handlers (Unity 6 requirement)
             RegisterCallback<AttachToPanelEvent>(OnAttachedToPanel);
         }
 
-        /// <summary>
-        /// Unity 6: Declare interest in specific events for performance optimization
-        /// </summary>
-        [EventInterest(typeof(MouseDownEvent), typeof(MouseUpEvent), typeof(MouseMoveEvent), typeof(MouseEnterEvent), typeof(MouseLeaveEvent))]
-        protected override void HandleEventBubbleUp(EventBase evt)
-        {
-            // Handle events in the bubble up phase (Unity 6 pattern)
-            switch (evt.eventTypeId)
-            {
-                case var id when id == MouseDownEvent.TypeId():
-                    HandleMouseDown(evt as MouseDownEvent);
-                    break;
-                case var id when id == MouseUpEvent.TypeId():
-                    HandleMouseUp(evt as MouseUpEvent);
-                    break;
-                case var id when id == MouseEnterEvent.TypeId():
-                    HandleMouseEnter(evt as MouseEnterEvent);
-                    break;
-                case var id when id == MouseLeaveEvent.TypeId():
-                    HandleMouseLeave(evt as MouseLeaveEvent);
-                    break;
-            }
-
-            base.HandleEventBubbleUp(evt);
-        }
-
-        /// <summary>
-        /// Setup event handlers after panel attachment (Unity 6 requirement)
-        /// </summary>
         private void OnAttachedToPanel(AttachToPanelEvent evt)
         {
             // Register mouse callbacks with TrickleDown to intercept before other manipulators
             RegisterCallback<MouseDownEvent>(OnMouseDownCapture, TrickleDown.TrickleDown);
             RegisterCallback<MouseUpEvent>(OnMouseUpCapture, TrickleDown.TrickleDown);
+
+            RegisterCallback<MouseDownEvent>(HandleMouseDown);
+            RegisterCallback<MouseUpEvent>(HandleMouseUp);
+            RegisterCallback<MouseEnterEvent>(HandleMouseEnter);
+            RegisterCallback<MouseLeaveEvent>(HandleMouseLeave);
 
             // Register hover callbacks
             RegisterCallback<MouseEnterEvent>(OnMouseEnterHandler);
@@ -121,7 +94,7 @@ namespace RGame.ScriptableCoreKit
                     // Capture mouse to ensure we get the up event
                     _hasMouseCapture = true;
                     this.CaptureMouse();
-                    evt.StopPropagation(); // Unity 6: Use StopPropagation instead of PreventDefault
+                    evt.StopPropagation();
 
                     Debug.Log("Edge clicked - mouse captured");
                 }
@@ -151,7 +124,7 @@ namespace RGame.ScriptableCoreKit
         }
 
         /// <summary>
-        /// Handle mouse down in bubble up phase (Unity 6 event handling)
+        /// Handle mouse down in bubble up phase
         /// </summary>
         private void HandleMouseDown(MouseDownEvent evt)
         {
@@ -175,7 +148,7 @@ namespace RGame.ScriptableCoreKit
         }
 
         /// <summary>
-        /// Handle mouse up in bubble up phase (Unity 6 event handling)
+        /// Handle mouse up in bubble up phase
         /// </summary>
         private void HandleMouseUp(MouseUpEvent evt)
         {

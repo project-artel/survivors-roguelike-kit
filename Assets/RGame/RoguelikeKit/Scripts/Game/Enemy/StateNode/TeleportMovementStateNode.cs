@@ -85,7 +85,7 @@ namespace RGame.RoguelikeKit
             float baseSpeed = statRuntime?.GetValue("Speed") ?? 5f;
             float finalSpeed = baseSpeed * moveSpeedMultiplier;
             
-            rigidBody.linearVelocity = direction * finalSpeed;
+            rigidBody.velocity = direction * finalSpeed;
             
             // Flip sprite based on movement direction
             if (flipSpriteBasedOnDirection && direction.x != 0)
@@ -105,7 +105,7 @@ namespace RGame.RoguelikeKit
             // Try to get player movement from a player controller component
             var playerController = playerTransform.GetComponent<Rigidbody2D>();
             if (playerController != null)
-                playerMoveDirection = playerController.linearVelocity.normalized;
+                playerMoveDirection = playerController.velocity.normalized;
             
             // If player is not moving, use random direction
             if (playerMoveDirection.magnitude < 0.1f)
@@ -132,7 +132,7 @@ namespace RGame.RoguelikeKit
             transform.position = teleportPosition;
             
             // Stop movement briefly after teleport
-            rigidBody.linearVelocity = Vector2.zero;
+            rigidBody.velocity = Vector2.zero;
             
             // Optional: Add teleport effect
             OnTeleport(teleportPosition);
@@ -154,7 +154,7 @@ namespace RGame.RoguelikeKit
             
             // Stop movement when exiting state
             if (rigidBody != null)
-                rigidBody.linearVelocity = Vector2.zero;
+                rigidBody.velocity = Vector2.zero;
         }
         
         public override string GetDisplayName()

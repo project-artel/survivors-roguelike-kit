@@ -86,7 +86,7 @@ namespace RGame.RoguelikeKit
         private void HandleDeath()
         {
             _isDead = true;
-            MyRigidbody2D.linearVelocity = Vector2.zero;
+            MyRigidbody2D.velocity = Vector2.zero;
 
             foreach (var key in _dropKeys)
             {

@@ -19,7 +19,7 @@ namespace RGame.RoguelikeKit
 
         private void Update()
         {
-            if (MyRigidbody.linearVelocity.magnitude != 0)
+            if (MyRigidbody.velocity.magnitude != 0)
                 ChangeAnimation("Run");
             else
                 ChangeAnimation("Idle");
