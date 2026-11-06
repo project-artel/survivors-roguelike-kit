@@ -57,7 +57,7 @@ namespace RGame.RoguelikeKit
             Vector3 direction = (playerPosition - currentPosition).normalized;
             float speed = StatRuntime.GetValue("Speed") * _globalConfig.MoveSpeedBalanceFactor;
 
-            MyRigidbody2D.linearVelocity = direction * speed;
+            MyRigidbody2D.velocity = direction * speed;
             
             // Flip sprite based on movement direction
             if (direction.x != 0)

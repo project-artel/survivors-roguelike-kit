@@ -39,7 +39,7 @@ namespace RGame.ScriptableCoreKit
             isShrinking = false;
             
             // Stop any movement during initial grow phase
-            enemy.MyRigidbody2D.linearVelocity = Vector2.zero;
+            enemy.MyRigidbody2D.velocity = Vector2.zero;
             
             StartRushSequence();
         }
@@ -76,14 +76,14 @@ namespace RGame.ScriptableCoreKit
             isRushing = true;
             
             // Apply rush velocity
-            enemy.MyRigidbody2D.linearVelocity = rushDirection * rushSpeed;
+            enemy.MyRigidbody2D.velocity = rushDirection * rushSpeed;
             
             // Wait a moment then start shrinking
             rushSequence.AppendInterval(0.1f)
                 .AppendCallback(() => {
                     isRushing = false;
                     isShrinking = true;
-                    enemy.MyRigidbody2D.linearVelocity = Vector2.zero;
+                    enemy.MyRigidbody2D.velocity = Vector2.zero;
                 })
                 .Append(transform.DOScale(originalScale, shrinkDuration))
                 .OnComplete(() => {
@@ -104,7 +104,7 @@ namespace RGame.ScriptableCoreKit
                 transform.localScale = originalScale;
                 
             if (enemy?.MyRigidbody2D != null)
-                enemy.MyRigidbody2D.linearVelocity = Vector2.zero;
+                enemy.MyRigidbody2D.velocity = Vector2.zero;
         }
         
         public override string GetDisplayName()

@@ -2,7 +2,7 @@
 
 Build your own Vampire Survivors-style game in Unity with a complete, open-source project template.
 
-![Unity](https://img.shields.io/badge/Unity-6-black)
+![Unity](https://img.shields.io/badge/Unity-2022.3_LTS-black)
 ![Render Pipeline](https://img.shields.io/badge/Render%20Pipeline-Built--in-blue)
 [![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 [![Documentation](https://img.shields.io/badge/Documentation-GitBook-orange)](https://roogame.gitbook.io/roogame/survivors-roguelike-kit)
@@ -50,18 +50,18 @@ This project is now open source so developers can learn from it, extend it, and 
 
 ## Requirements
 
-- Unity 6
+- Unity 2022.3.62f3
 - Built-in Render Pipeline
 - DOTween, already included in this project
 
 ## Quick Start
 
-You can clone this repository directly and open it with Unity Hub using Unity 6.
+You can clone this repository directly and open it with Unity Hub using Unity 2022.3.62f3.
 
 This project uses Unity's Built-in Render Pipeline by default.
 
 ```bash
-git clone https://github.com/Roo-Roo-Roo/survivors-roguelike-kit.git
+git clone https://github.com/project-artel/survivors-roguelike-kit.git
 ```
 
 If you want to import the kit into your own Unity project, use the release package from the GitHub Releases panel on the right side of this repository page.

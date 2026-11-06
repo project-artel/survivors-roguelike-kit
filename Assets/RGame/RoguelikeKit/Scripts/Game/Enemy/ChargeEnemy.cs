@@ -52,7 +52,7 @@ namespace RGame.RoguelikeKit
         protected override void Move()
         {
             float speed = StatRuntime.GetValue("Speed") * _globalConfig.MoveSpeedBalanceFactor;
-            MyRigidbody2D.linearVelocity = _moveDir * speed;
+            MyRigidbody2D.velocity = _moveDir * speed;
             
             if (_moveDir.x != 0)
                 transform.localScale = new Vector3(Mathf.Sign(_moveDir.x), 1, 1);

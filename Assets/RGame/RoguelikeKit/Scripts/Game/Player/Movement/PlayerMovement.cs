@@ -43,7 +43,7 @@ namespace RGame.RoguelikeKit
                 _player.MoveDirection = move;
             }
             
-            _myRigidbody.linearVelocity = move * (stat.GetValue("MoveSpeed") * globalConfigSO.MoveSpeedBalanceFactor * 0.5f);
+            _myRigidbody.velocity = move * (stat.GetValue("MoveSpeed") * globalConfigSO.MoveSpeedBalanceFactor * 0.5f);
             
             if (move.x != 0) transform.localScale = new Vector3(Mathf.Sign(move.x), 1, 1);
         }
