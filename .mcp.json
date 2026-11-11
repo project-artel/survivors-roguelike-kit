@@ -1,8 +1,0 @@
-{
-  "mcpServers": {
-    "artel-macro-mcp": {
-      "type": "http",
-      "url": "https://stage-mcp.artel.kr/mcp"
-    }
-  }
-}
