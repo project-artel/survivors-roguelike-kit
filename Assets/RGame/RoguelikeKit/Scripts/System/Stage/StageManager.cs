@@ -59,6 +59,46 @@ namespace RGame.RoguelikeKit
 
         private void OnPlayerSpawned(Player player) => _player = player.transform;
 
+#if ARTEL_GAME_FUNCTIONS
+        internal bool IsQaStageReady => isActiveAndEnabled && _player && _spawnSets != null;
+
+        internal string SpawnQaEnemyGroup(string spawnSet)
+        {
+            var set = _spawnSets.Find(candidate =>
+                candidate.Pattern != SpawnPatternType.Random &&
+                string.Equals(candidate.name, spawnSet, StringComparison.OrdinalIgnoreCase));
+            if (!set)
+            {
+                var names = _spawnSets.FindAll(candidate => candidate.Pattern != SpawnPatternType.Random)
+                    .ConvertAll(candidate => candidate.name);
+                string available = $"available_spawn_sets={string.Join(", ", names)}";
+                if (string.IsNullOrEmpty(spawnSet)) return available;
+                throw new ArgumentException($"현재 스테이지의 스폰 세트가 아닙니다. {available}", nameof(spawnSet));
+            }
+
+            if (set.Pattern == SpawnPatternType.Circle)
+                CircleSpawnEnemy(set, set.Count);
+            else
+                DenseSpawnEnemy(set, set.Count);
+            return $"spawn_set={set.name}, count={set.Count}";
+        }
+
+        internal Vector2 GetQaKiteDirection(Vector2 position)
+        {
+            Vector2 direction = Vector2.zero;
+            float nearestDistance = float.PositiveInfinity;
+            foreach (var enemy in enemySystem.GetEnemies())
+            {
+                if (!enemy || !enemy.isActiveAndEnabled) continue;
+                Vector2 offset = position - (Vector2)enemy.transform.position;
+                if (offset.sqrMagnitude >= nearestDistance) continue;
+                nearestDistance = offset.sqrMagnitude;
+                direction = offset == Vector2.zero ? Vector2.right : offset.normalized;
+            }
+            return direction;
+        }
+#endif
+
         private void OnStageStart(RuntimeStageConfigSO runtime)
         {
             // Make a sorted copy of segments so designer order is irrelevant

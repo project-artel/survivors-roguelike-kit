@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "kr.artel.sdk": "https://github.com/project-artel/artel-sdk.git?path=/Packages/kr.artel.sdk#1d7b3a1d393682bb237a236e7563b55cde31c0bc",
     "com.unity.addressables": "1.22.3",
     "com.unity.collab-proxy": "2.5.2",
     "com.unity.feature.2d": "2.0.1",
