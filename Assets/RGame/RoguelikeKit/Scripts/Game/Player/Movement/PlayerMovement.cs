@@ -21,6 +21,10 @@ namespace RGame.RoguelikeKit
         private Vector2 _inputMove;
         private Rigidbody2D _myRigidbody;
         private bool _isDie;
+#if ARTEL_GAME_FUNCTIONS
+        internal bool IsQaPlayerAlive => isActiveAndEnabled && !_isDie;
+        internal Vector2 QaMoveDirection { private get; set; }
+#endif
         private void Awake()
         {
             _myRigidbody = GetComponent<Rigidbody2D>();
@@ -35,6 +39,9 @@ namespace RGame.RoguelikeKit
             Vector2 move = _inputMove;
             
             if (move == Vector2.zero) move = joystickInputWrapperSo.Value;
+#if ARTEL_GAME_FUNCTIONS
+            if (move == Vector2.zero) move = QaMoveDirection;
+#endif
             
             move.Normalize();
             

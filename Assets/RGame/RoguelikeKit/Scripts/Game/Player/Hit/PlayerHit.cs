@@ -23,10 +23,16 @@ namespace RGame.RoguelikeKit
         public UnityAction OnDie;
 
         private bool _isDie;
+#if ARTEL_GAME_FUNCTIONS && (UNITY_EDITOR || DEVELOPMENT_BUILD)
+        internal bool QaInvincible { get; set; }
+#endif
         
         public void OnHit(int damage)
         {
             if (_isDie) return;
+#if ARTEL_GAME_FUNCTIONS && (UNITY_EDITOR || DEVELOPMENT_BUILD)
+            if (QaInvincible) return;
+#endif
             
             damage = (int)(damage * mStat.GetValue("Armor") * 0.01f);
 

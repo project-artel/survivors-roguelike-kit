@@ -36,5 +36,29 @@ namespace RGame.RoguelikeKit
 
             _updateLevelUIChannel.RaiseEvent();
         }
+
+#if ARTEL_GAME_FUNCTIONS
+        internal int QaHp => _stat.GetValue("HP");
+        internal int QaLevel => _stat.GetValue("Level");
+        internal int QaExp => _stat.GetValue("Exp");
+
+        internal string SetQaHealth(int health)
+        {
+            int maximum = _stat.GetMaxValue("HP");
+            if (health > maximum) throw new ArgumentOutOfRangeException(nameof(health));
+            _stat.ModifyValue("HP", health - _stat.GetValue("HP"));
+            return $"hp={_stat.GetValue("HP")}, max_hp={maximum}";
+        }
+
+        internal string SetQaXpToNextLevel(int remainingXp)
+        {
+            int threshold = expConfig.GetExperienceForLevel(_stat.GetValue("Level"));
+            if (remainingXp > threshold)
+                throw new ArgumentOutOfRangeException(nameof(remainingXp), "현재 레벨의 필요 경험치를 초과했습니다.");
+
+            _stat.ModifyValue("Exp", threshold - remainingXp - _stat.GetValue("Exp"));
+            return $"remaining_xp={threshold - _stat.GetValue("Exp")}";
+        }
+#endif
     }
 }
