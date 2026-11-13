@@ -26,3 +26,10 @@
 Unity 2022.3.62f3에서 `SurvivorsQaBuild.Run`을 실행합니다. Addressables와 Windows 개발 빌드를 생성합니다. 빌드 스크립트는 별도 QA 프로젝트에서 실행하도록 작성되었으며 출력은 그 프로젝트의 형제 폴더 `qa-build`입니다. QA 빌드의 productName은 `Survivors Artel QA 55`이므로 일반 빌드의 저장과 분리됩니다.
 
 SDK는 검증에 사용한 커밋으로 고정했습니다. `.artel/`의 로컬 빌드·로그·백업은 Git에서 제외합니다. 콘솔 승인과 실제 게임 입력·치트 호출 검증은 별도로 필요합니다.
+
+## 반복 가능한 사전조건 준비
+
+- `set_character_unlocked(character, unlocked)`: Assassin 또는 Mage의 해금 여부를 저장합니다. Mage 테스트는 false로 준비합니다.
+- `reset_might_upgrade()`: 골드와 다른 강화를 유지하고 Might 단계만 0으로 저장합니다.
+
+두 함수 모두 메뉴에서 호출하고 게임을 재시작해야 카드 표시와 런타임 강화 수치가 다시 초기화됩니다. 저장 성공 여부를 확인하며 기존 저장 전체를 삭제하지 않습니다. Test Run 160의 강화·캐릭터 시나리오 4개와 Test Run 161의 자유형 시나리오에 준비 방법을 반영했습니다.

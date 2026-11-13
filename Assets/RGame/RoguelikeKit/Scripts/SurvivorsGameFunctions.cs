@@ -9,6 +9,28 @@ namespace RGame.RoguelikeKit
 {
     public static class SurvivorsGameFunctions
     {
+        public enum QaCharacter { Assassin, Mage }
+
+        [ArtelCheat("메뉴에서 캐릭터 해금 상태를 저장합니다. 적용 후 게임을 재시작하면 카드와 선택 상태가 다시 초기화됩니다.", when: nameof(InMenu))]
+        private static string SetCharacterUnlocked(QaCharacter character, bool unlocked)
+        {
+            var save = SurvivorsQaState.Loaded<CharacterSaveSO>();
+            if (!save) throw new InvalidOperationException("캐릭터 저장 데이터가 없습니다.");
+            save.SaveCharacter(character == QaCharacter.Assassin ? unlocked : save.CharacterTwo,
+                character == QaCharacter.Mage ? unlocked : save.CharacterThree);
+            SaveQaPreparation();
+            return $"character={character}, unlocked={unlocked}; 게임을 재시작하세요.";
+        }
+
+        [ArtelCheat("메뉴에서 Might 영구 강화 단계를 0으로 저장합니다. 게임 재시작 후 강화 수치와 카드가 다시 초기화됩니다. 골드는 유지합니다.", when: nameof(InMenu))]
+        private static string ResetMightUpgrade()
+        {
+            var attributes = SurvivorsQaState.Loaded<AttributeSO>();
+            attributes.SetAttribute("Might", 0);
+            SaveQaPreparation();
+            return "might_upgrade_level=0; 게임을 재시작하세요.";
+        }
+
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
         [ArtelCheat("현재 플레이어의 무적을 켜거나 끕니다. 켜면 적 공격의 피해·피격·사망 처리를 막습니다. 새 플레이어에서는 꺼집니다.", when: nameof(Playing))]
         private static string SetInvincible(bool enabled)
@@ -31,6 +53,16 @@ namespace RGame.RoguelikeKit
             attributes.SetAttribute("GoldCount", gold);
             SurvivorsQaState.Loaded<SaveSystemSO>().SaveDataToDisk();
             return $"gold={attributes.GoldCount}; 다시 연 메뉴에서 표시를 확인하세요.";
+        }
+
+        private static void SaveQaPreparation()
+        {
+            var save = SurvivorsQaState.Loaded<SaveSystemSO>();
+            if (!System.IO.File.Exists(System.IO.Path.Combine(Application.persistentDataPath, save.saveFilename)))
+                save.WriteEmptySaveFile();
+            save.SaveDataToDisk();
+            if (!FileManager.LoadFromFile(save.saveFilename, out var json) || json != save.Save.ToJson())
+                throw new InvalidOperationException("QA 준비 상태를 저장하지 못했습니다.");
         }
 
         private static string InMenu() => Object.FindAnyObjectByType<UIMenuManager>() &&
