@@ -11,6 +11,15 @@ namespace RGame.RoguelikeKit
     {
         public enum QaCharacter { Assassin, Mage }
 
+        [ArtelOverrideCheat("reset_game", "현재 원정을 중단하고 메인 메뉴를 다시 엽니다. 저장된 해금과 강화는 유지합니다.")]
+        private static IEnumerator ResetGame()
+        {
+            var loader = Object.FindAnyObjectByType<SceneLoader>();
+            if (!loader) throw new InvalidOperationException("씬 로더가 없습니다.");
+
+            yield return loader.ReloadMenuForQa();
+        }
+
         [ArtelCheat("메뉴에서 캐릭터 해금 상태를 저장합니다. 적용 후 게임을 재시작하면 카드와 선택 상태가 다시 초기화됩니다.", when: nameof(InMenu))]
         private static string SetCharacterUnlocked(QaCharacter character, bool unlocked)
         {
