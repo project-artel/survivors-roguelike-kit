@@ -37,6 +37,9 @@ namespace RGame.RoguelikeKit
         private bool isLoading;
         private GameSceneSO currentLoadedScene;
         private GameSceneSO pendingSceneToLoad;
+#if ARTEL_GAME_FUNCTIONS
+        private GameSceneSO qaMenuScene;
+#endif
         
         private AsyncOperationHandle<SceneInstance> gameplayManagerLoadingHandle;
         private SceneInstance gameplayManagerSceneInstance;
@@ -75,6 +78,9 @@ namespace RGame.RoguelikeKit
         {
             if (isLoading) return;
 
+#if ARTEL_GAME_FUNCTIONS
+            qaMenuScene = menuToLoad;
+#endif
             pendingSceneToLoad = menuToLoad;
             isLoading = true;
 
@@ -85,6 +91,31 @@ namespace RGame.RoguelikeKit
 
             StartCoroutine(UnloadCurrentSceneRoutine());
         }
+
+#if ARTEL_GAME_FUNCTIONS
+        internal IEnumerator ReloadMenuForQa()
+        {
+            Time.timeScale = 1f;
+            while (isLoading)
+                yield return null;
+
+            if (!qaMenuScene)
+                throw new System.InvalidOperationException("메인 메뉴가 아직 초기화되지 않았습니다.");
+
+            var buffManager = FindAnyObjectByType<BuffManager>();
+            if (buffManager)
+                buffManager.ClearAllBuffs();
+            SurvivorsQaState.Loaded<PoolRuntimeSO>()?.RecycleAll();
+
+            var save = SurvivorsQaState.Loaded<SaveSystemSO>();
+            if (save && FileManager.LoadFromFile(save.saveFilename, out var json) && !string.IsNullOrEmpty(json))
+                save.LoadSaveDataFromDisk();
+
+            HandleMenuLoadRequest(qaMenuScene, true, true);
+            while (isLoading)
+                yield return null;
+        }
+#endif
 
         private bool IsGameplayManagerLoaded()
         {
@@ -119,7 +150,9 @@ namespace RGame.RoguelikeKit
 
             if (currentLoadedScene != null && currentLoadedScene.sceneReference.OperationHandle.IsValid())
             {
-                currentLoadedScene.sceneReference.UnLoadScene();
+                var unload = currentLoadedScene.sceneReference.UnLoadScene();
+                if (currentLoadedScene == pendingSceneToLoad)
+                    yield return unload;
             }
 
             LoadPendingScene();
